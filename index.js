@@ -10,7 +10,7 @@ const app = express()
 
 // ✅ Allow your live frontend to access the backend:
 app.use(cors({
-  origin: ['https://crm3321.vercel.app'],
+  origin: '*',
   credentials: true
 }));
 app.use(express.json())
