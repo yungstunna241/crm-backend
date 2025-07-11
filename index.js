@@ -9,11 +9,11 @@ const mongoose = require('mongoose')
 const app = express()
 
 // ✅ Allow your live frontend to access the backend:
-app.use(cors({ origin: 'https://stunna-crm.vercel.app' }))
+app.use(cors({ origin: ['https://stunna-crm.vercel.app', 'https://crm3321.vercel.app'] }));
 app.use(express.json())
 
-// ✅ Connect to MongoDB Atlas (replace with your real password)
-mongoose.connect('mongodb+srv://truemudbaby:1paroliparoli@crm-base.mongodb.net/?retryWrites=true&w=majority')
+// ✅ Connect to MongoDB Atlas (with correct password):
+mongoose.connect('mongodb+srv://truemudbaby:1paroliparoli@crm-base.ninskus.mongodb.net/crm?retryWrites=true&w=majority&appName=crm-base')
 
 mongoose.connection.on('error', err => {
   console.error('MongoDB connection error:', err)
