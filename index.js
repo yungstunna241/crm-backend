@@ -9,10 +9,11 @@ const User = require('./models/User')
 
 const app = express()
 
-app.use(cors({ origin: 'http://localhost:3000' }))
+app.use(cors({ origin: 'https://stunna-crm.vercel.app' }))
 app.use(express.json())
 
-mongoose.connect('mongodb://127.0.0.1:27017/crm');
+mongoose.connect('mongodb+srv://truemudbaby:yourpassword@crm-base.mongodb.net/?retryWrites=true&w=majority');
+
 
 mongoose.connection.on('error', err => {
   console.error('MongoDB connection error:', err)
@@ -88,4 +89,5 @@ app.post('/login', async (req, res) => {
   }
 })
 
-app.listen(4000, () => console.log('Backend running on http://localhost:4000'))
+const port = process.env.PORT || 4000;
+app.listen(port, () => console.log(`Backend running on http://localhost:${port}`));
