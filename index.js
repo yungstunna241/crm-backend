@@ -1,4 +1,4 @@
-process.on('uncaughtException', function(err) {
+process.on('uncaughtException', function (err) {
   console.error('Caught exception:', err)
 })
 
@@ -46,10 +46,13 @@ app.get('/contacts', async (req, res) => {
 
   try {
     const total = await Contact.countDocuments()
-    const contacts = await Contact.find().skip(skip).limit(limit)
+    const contacts = await Contact.find().skip(skip).limit(limit).sort({ date: -1 })
     const totalPages = Math.ceil(total / limit)
 
-    res.json({ contacts, totalPages })
+    res.json({
+      contacts,
+      totalPages
+    })
   } catch (err) {
     console.error('GET /contacts error:', err)
     res.status(500).json({ error: 'Failed to fetch contacts' })
@@ -68,6 +71,6 @@ app.post('/contacts/:id/update', async (req, res) => {
   }
 })
 
-// start
+// start server
 const port = process.env.PORT || 4000
 app.listen(port, () => console.log(`Backend running on http://localhost:${port}`))
