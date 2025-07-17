@@ -36,7 +36,7 @@ const ContactSchema = new mongoose.Schema({
 
 const Contact = mongoose.model('Contact', ContactSchema)
 
-// ✅ GET contacts with pagination
+// ✅ GET contacts with pagination (fixed version)
 app.get('/contacts', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1
@@ -48,8 +48,6 @@ app.get('/contacts', async (req, res) => {
 
     res.json({
       contacts,
-      total,
-      page,
       totalPages: Math.ceil(total / limit)
     })
   } catch (err) {
