@@ -31,7 +31,7 @@ const ContactSchema = new mongoose.Schema({
   email: String,
   kyc: String,
   result: String,
-  date: { type: Date, default: '' },
+  date: { type: Date, default: Date.now }, // ✅ use valid default date
   source: { type: String, default: '' },
   country: { type: String, default: '' }
 })
@@ -50,8 +50,8 @@ app.get('/contacts', async (req, res) => {
     const totalPages = Math.ceil(total / limit)
 
     res.json({
-      contacts,
-      totalPages
+      contacts: Array.isArray(contacts) ? contacts : [],
+      totalPages: totalPages || 1
     })
   } catch (err) {
     console.error('GET /contacts error:', err)
@@ -63,7 +63,11 @@ app.get('/contacts', async (req, res) => {
 app.post('/contacts/:id/update', async (req, res) => {
   try {
     const { kyc, result } = req.body
-    await Contact.findByIdAndUpdate(req.params.id, { kyc, result })
+    const updateFields = {}
+    if (kyc !== undefined) updateFields.kyc = kyc
+    if (result !== undefined) updateFields.result = result
+
+    await Contact.findByIdAndUpdate(req.params.id, updateFields)
     res.sendStatus(200)
   } catch (err) {
     console.error('POST /contacts/:id/update error:', err)
