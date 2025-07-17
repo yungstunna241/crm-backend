@@ -8,12 +8,14 @@ const mongoose = require('mongoose')
 
 const app = express()
 
+// ✅ Allow your live frontend to access the backend:
 app.use(cors({
   origin: '*',
   credentials: true
-}))
+}));
 app.use(express.json())
 
+// ✅ Connect to MongoDB Atlas (with correct password):
 mongoose.connect('mongodb+srv://truemudbaby:1paroliparoli@crm-base.ninskus.mongodb.net/crm?retryWrites=true&w=majority&appName=crm-base')
 
 mongoose.connection.on('error', err => {
@@ -24,6 +26,7 @@ mongoose.connection.once('open', () => {
   console.log('MongoDB connected')
 })
 
+// ✅ Contact Schema:
 const ContactSchema = new mongoose.Schema({
   name: String,
   number: String,
@@ -36,26 +39,18 @@ const ContactSchema = new mongoose.Schema({
 
 const Contact = mongoose.model('Contact', ContactSchema)
 
-// ✅ GET contacts with pagination (fixed version)
+// ✅ Get all contacts:
 app.get('/contacts', async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1
-    const limit = 10
-    const skip = (page - 1) * limit
-
-    const total = await Contact.countDocuments()
-    const contacts = await Contact.find().skip(skip).limit(limit).sort({ date: -1 })
-
-    res.json({
-      contacts,
-      totalPages: Math.ceil(total / limit)
-    })
+    const contacts = await Contact.find()
+    res.json(contacts)
   } catch (err) {
     console.error('GET /contacts error:', err)
     res.status(500).json({ error: 'Failed to fetch contacts' })
   }
 })
 
+// ✅ Update contact (KYC or status):
 app.post('/contacts/:id/update', async (req, res) => {
   try {
     const { kyc, result } = req.body
@@ -67,5 +62,6 @@ app.post('/contacts/:id/update', async (req, res) => {
   }
 })
 
+// ✅ Start the server:
 const port = process.env.PORT || 4000
 app.listen(port, () => console.log(`Backend running on http://localhost:${port}`))
