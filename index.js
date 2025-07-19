@@ -58,4 +58,24 @@ app.post('/contacts/:id/update', async (req, res) => {
 })
 
 const port = process.env.PORT || 4000
+
+const jwt = require('jsonwebtoken');
+const User = require('./models/User');
+
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: 'User not found' });
+
+    const isMatch = password === user.password;
+    if (!isMatch) return res.status(401).json({ message: 'Wrong password' });
+
+    const token = jwt.sign({ id: user._id, role: user.role }, 'secretkey');
+    res.json({ token, user });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 app.listen(port, () => console.log(`Backend running on http://localhost:${port}`))
